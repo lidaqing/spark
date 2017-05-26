@@ -1,0 +1,41 @@
+use feigu;
+
+drop table if exists stg_fund_2016113009;
+create table if not exists stg_fund_2016113009
+(
+fund_code string comment '基金代码',
+fund_date string comment '发布日期',
+nav string comment '基金单位净值',
+accnav string comment '基金累计净值',
+accrate string comment '日增长率'
+)ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+NULL DEFINED AS ''
+STORED AS TEXTFILE;
+
+drop table if exists rpt_fund_2016113009;
+create table if not exists rpt_table_2016113009
+(
+fund_code string comment '基金代码',
+fund_date string comment '发布日期',
+nav float comment '浮点数类型单位净值',
+accnav float comment '浮点数类型累计净值',
+accrate float comment '浮点数类型去掉%的日增长率',
+val_flag string comment '标志位'
+)ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+NULL DEFINED AS ''
+STORED AS SEQUENCEFILE;
+
+load data local inpath '/home/hadoop/homework1130/2016113009_lq/final/funddata/funddata/spiders/fund_data/*.txt' into table stg_fund_2016113009;
+
+INSERT OVERWRITE TABLE rpt_table_2016113009
+SELECT
+    fund_code,
+    fund_date,
+    nav,
+    cast(accnav AS FLOAT),
+    cast(accrate AS FLOAT),
+    CASE
+      WHEN accrate >= 0 THEN 'T'
+      WHEN accrate < 0 THEN 'F'
+    END AS val_flag
+FROM stg_fund_2016113009;
