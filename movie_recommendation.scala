@@ -6,9 +6,6 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.Row
 import org.apache.spark.rdd._
 
-Logger.getLogger("org.apache.spark").setLevel(Level.WARN)
-Logger.getLogger("org.apache.eclipse.jetty.server").setLevel(Level.OFF)
-
 val rawratings = sc.textFile("hdfs://master:9000/home/hadoop/data/u.data").map(_.split("\t").take(3))
 
 val ratings = rawratings.map{case Array(user,movie,rating) => Rating(user.toInt,movie.toInt,rating.toDouble)}.cache()
