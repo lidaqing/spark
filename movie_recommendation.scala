@@ -28,7 +28,7 @@ val numTraining = training.count()
 val numValidation = validation.count()
 val numTest = test.count()
 
-println("Training: " + numTraining + ' validation:" + numValidation + " test: " + numTest)
+println("Training: " + numTraining + validation:" + numValidation + " test: " + numTest)
 
 def computeRmse(model:MatrixFactorizationModel,data:RDD[Rating],n:Long):Double=
 {
